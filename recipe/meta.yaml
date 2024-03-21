@@ -47,10 +47,13 @@ test:
 about:
   home: https://github.com/ales-erjavec/anyqt/
   license: GPL-3.0-or-later
+  license_family: GPLv3
   license_file: LICENSE.txt
-  summary: PyQt4/PyQt5 compatibility layer.
-  doc_url: http://anyqt.readthedocs.io/en/0.0.7/
-  dev_url: https//github.com/ales-erjavec/anyqt
+  summary: PyQt5/PyQt6 compatibility layer.
+  description: |
+    AnyQt exports a Qt5 compatible module namespace along with minimal renames to support portability between versions and provides an optional compatibility import hook.
+  doc_url: https://anyqt.readthedocs.io/en/stable/
+  dev_url: https://github.com/ales-erjavec/anyqt/
 
 extra:
   recipe-maintainers:
