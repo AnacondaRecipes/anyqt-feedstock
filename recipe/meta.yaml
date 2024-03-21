@@ -1,6 +1,6 @@
 {% set name = "AnyQt" %}
-{% set version = "0.1.1" %}
-{% set sha256 = "271aee5fd216c14f044917ecc978fadf8b8cd89ecc61060689f0920e51c56276" %}
+{% set version = "0.2.0" %}
+{% set sha256 = "4b9228b918a26df2fdcc61f135db548ad3c3036e5bc7e67ba8147e0b6683763b" %}
 # on our builders there is no X11 installed and therefore import
 # test will fail
 {% if target_platform != "linux-aarch64" and target_platform != "linux-64"%}
@@ -20,7 +20,7 @@ source:
 
 build:
   number: 0
-  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  script: {{ PYTHON }} -m pip install . --no-deps -vv --no-build-isolation
   skip: True  # [linux and (s390x or ppc64le)]
   skip: True  # [py<36]
 
@@ -43,14 +43,21 @@ test:
     - AnyQt.QtNetwork
     - AnyQt.QtSvg
 {% endif %}
+  requires:
+    - pip
+  commands:
+    - pip check
 
 about:
   home: https://github.com/ales-erjavec/anyqt/
   license: GPL-3.0-or-later
+  license_family: GPL3
   license_file: LICENSE.txt
-  summary: PyQt4/PyQt5 compatibility layer.
-  doc_url: http://anyqt.readthedocs.io/en/0.0.7/
-  dev_url: https//github.com/ales-erjavec/anyqt
+  summary: PyQt5/PyQt6 compatibility layer.
+  description: |
+    AnyQt exports a Qt5 compatible module namespace along with minimal renames to support portability between versions and provides an optional compatibility import hook.
+  doc_url: https://anyqt.readthedocs.io/en/stable/
+  dev_url: https://github.com/ales-erjavec/anyqt/
 
 extra:
   recipe-maintainers:
