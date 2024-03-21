@@ -43,11 +43,15 @@ test:
     - AnyQt.QtNetwork
     - AnyQt.QtSvg
 {% endif %}
+  requires:
+    - pip
+  commands:
+    - pip check
 
 about:
   home: https://github.com/ales-erjavec/anyqt/
   license: GPL-3.0-or-later
-  license_family: GPLv3
+  license_family: GPL3
   license_file: LICENSE.txt
   summary: PyQt5/PyQt6 compatibility layer.
   description: |
