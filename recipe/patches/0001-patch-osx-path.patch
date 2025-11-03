@@ -1,0 +1,91 @@
+From 8c1a6cfef84c44757b0a66ac7b4e09d5d0e98d9f Mon Sep 17 00:00:00 2001
+From: Ivan Iziumov <iiziumov@anaconda.com>
+Date: Mon, 3 Nov 2025 16:10:53 +0100
+Subject: [PATCH] patch osx path
+
+---
+ AnyQt/_ctypes.py | 33 +++++++++++++--------------------
+ AnyQt/_fixes.py  |  2 +-
+ 2 files changed, 14 insertions(+), 21 deletions(-)
+
+diff --git a/AnyQt/_ctypes.py b/AnyQt/_ctypes.py
+index 218e247..2896f40 100644
+--- a/AnyQt/_ctypes.py
++++ b/AnyQt/_ctypes.py
+@@ -18,7 +18,7 @@ def shlib_ext():
+     if sys.platform == "win32":
+         extensions += [".dll"]
+     elif sys.platform == "darwin":
+-        extensions += ["", ".dylib"]
++        extensions += [".dylib"]
+     else:
+         extensions += [".so"]
+ 
+@@ -39,31 +39,25 @@ def shlib_ext():
+ def find_library(name, path) -> Iterable[str]:
+     if sys.platform == "darwin":
+         test = [
+-            name,
+-            name + ".so",
+-            name + ".dylib"
+-            "{name}.framework/{name}".format(name=name),
+-            "{name}.framework/Versions/Current/{name}".format(name=name),
+-            "{name}.framework/Versions/*/{name}".format(name=name),
++            f"{name}*.dylib", 
++            f"lib{name}*.dylib"
+         ]
+-
+     elif sys.platform == "win32":
+-        test = [name, name + ".dll"]
++        test = [f"{name}.dll"]
+     else:
+         test = [
+-            name,
+-            name + ".so",
+-            "lib{name}.so".format(name=name),
+-            "lib{name}.so.*".format(name=name)
++            f"{name}.so",
++            f"{name}.so.*",
++            f"lib{name}.so",
++            f"lib{name}.so.*"
+         ]
+ 
+-    for suffix in test:
+-        yield from glob.iglob(os.path.join(path, suffix))
+-        # try:
+-        #     return next(glob.iglob(os.path.join(path, suffix)))
+-        # except StopIteration:
+-        #     pass
++    paths = list()
+ 
++    for suffix in test:
++        paths += list(glob.iglob(os.path.join(path, suffix)))
++    
++    return paths
+ 
+ def find_qtlib(name) -> Iterable[str]:
+     qtlibpath = QLibraryInfo.path(QLibraryInfo.LibrariesPath)
+@@ -77,7 +71,6 @@ def find_qtlib(name) -> Iterable[str]:
+         extra = []
+     return chain(paths, extra, (name, *((name_extra,) if extra else ())))
+ 
+-
+ def load_qtlib(name):
+     for path in find_qtlib(name):
+         try:
+diff --git a/AnyQt/_fixes.py b/AnyQt/_fixes.py
+index 54b1e42..eee3f9e 100644
+--- a/AnyQt/_fixes.py
++++ b/AnyQt/_fixes.py
+@@ -57,7 +57,7 @@ def fix_pyqt6_qtgui_qaction_menu(namespace):
+         return
+     import ctypes
+     from ._ctypes import load_qtlib
+-    qtgui = load_qtlib("QtGui")
++    qtgui = load_qtlib("Qt6Gui")
+     if os.name == "posix":  # assuming gcc compatible compiler
+         _QAction_setMenuObject = qtgui['_ZN7QAction13setMenuObjectEP7QObject']
+         _QAction_menuObject = qtgui['_ZNK7QAction10menuObjectEv']
+-- 
+2.50.1 (Apple Git-155)
+

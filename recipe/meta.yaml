@@ -1,28 +1,20 @@
 {% set name = "AnyQt" %}
-{% set version = "0.2.0" %}
-{% set sha256 = "4b9228b918a26df2fdcc61f135db548ad3c3036e5bc7e67ba8147e0b6683763b" %}
-# on our builders there is no X11 installed and therefore import
-# test will fail
-{% if target_platform != "linux-aarch64" and target_platform != "linux-64"%}
-{% set enable_testingui = true %}
-{% else %}
-{% set enable_testingui = false %}
-{% endif %}
+{% set version = "0.2.1" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: {{ sha256 }}
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name|lower }}-{{ version }}.tar.gz
+  sha256: a9ed7c5169691a105ef2cea9114d6f8d439875b807d7258a2107f55cb56483f6
+  patches:  # [osx]
+    - patches/0001-patch-osx-path.patch  # [osx]
 
 build:
   number: 0
-  script: {{ PYTHON }} -m pip install . --no-deps -vv --no-build-isolation
-  skip: True  # [linux and (s390x or ppc64le)]
   skip: True  # [py<36]
+  script: {{ PYTHON }} -m pip install . --no-deps -vv --no-build-isolation
 
 requirements:
   host:
@@ -35,29 +27,33 @@ requirements:
     - pyqt
 
 test:
+  source_files:
+    - tests
   imports:
     - AnyQt.QtCore
-{% if enable_testingui %}
     - AnyQt.QtGui
     - AnyQt.QtWidgets
     - AnyQt.QtNetwork
     - AnyQt.QtSvg
-{% endif %}
   requires:
     - pip
+    - pytest
   commands:
     - pip check
+    # Fatal Python error: Aborted for Linux
+    - pytest -v tests  # [not linux]
 
 about:
-  home: https://github.com/ales-erjavec/anyqt/
+  home: https://github.com/ales-erjavec/anyqt
   license: GPL-3.0-or-later
   license_family: GPL3
   license_file: LICENSE.txt
-  summary: PyQt5/PyQt6 compatibility layer.
+  summary: PyQt4/PyQt5 compatibility layer.
   description: |
-    AnyQt exports a Qt5 compatible module namespace along with minimal renames to support portability between versions and provides an optional compatibility import hook.
-  doc_url: https://anyqt.readthedocs.io/en/stable/
-  dev_url: https://github.com/ales-erjavec/anyqt/
+    AnyQt exports a Qt5 compatible module namespace along with minimal renames 
+    to support portability between versions and provides an optional compatibility import hook.
+  doc_url: https://anyqt.readthedocs.io/en/stable
+  dev_url: https://github.com/ales-erjavec/anyqt
 
 extra:
   recipe-maintainers:
