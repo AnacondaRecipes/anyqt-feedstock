@@ -42,7 +42,7 @@ test:
   commands:
     - pip check
     # Fatal Python error: Aborted for Linux
-    - pytest -v tests  # [not linux]
+    - pytest -vv tests  # [not linux]
 
 about:
   home: https://github.com/ales-erjavec/anyqt
