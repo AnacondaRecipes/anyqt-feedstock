@@ -1,6 +1,6 @@
-From 81b6947b6a21431571ef265c1ceb17cbe7482cf0 Mon Sep 17 00:00:00 2001
-From: Andrii Vetroumov <avetroumov@anaconda.com>
-Date: Fri, 30 Oct 2026 13:36:00 +0000
+From 8c1a6cfef84c44757b0a66ac7b4e09d5d0e98d9f Mon Sep 17 00:00:00 2001
+From: Ivan Iziumov <iiziumov@anaconda.com>
+Date: Mon, 3 Nov 2025 16:10:53 +0100
 Subject: [PATCH] patch osx path
 
 ---
